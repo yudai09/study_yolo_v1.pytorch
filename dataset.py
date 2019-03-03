@@ -23,11 +23,19 @@ def create_label(obj_list, class_list, image_size, B=2, C=20, S=14):
     proid = np.zeros([S * S, C]) # for class_probs weight \mathbb{1}^{obj}
     prear = np.zeros([S * S, 4]) # for bounding box coordinates
 
-    for obj, cls in zip(obj_list_norm, class_list):
-        print(obj, cls)
-        print(obj[4], labels[cls])
-        class_probs[obj[4], labels[cls]] = 1.
+    for (obj, idx), cls in zip(obj_list_norm, class_list):
+        print(obj, idx)
+        assert(cls in labels.keys())
+        class_probs[idx, labels[cls]] = 1.
+        confs[idx, :] = [1.] * B
+        coord[idx, :, :] = [obj] * B
+        proid[idx, :] = [1] * C
 
+        # transform width and height to the scale of coordinates
+        prear[idx, 0] = obj[0] - obj[2] ** 2 * 0.5 * S # x_left
+        prear[idx, 1] = obj[1] - obj[3] ** 2 * 0.5 * S # y_top
+        prear[idx, 2] = obj[0] + obj[2] ** 2 * 0.5 * S # x_right
+        prear[idx, 3] = obj[1] + obj[3] ** 2 * 0.5 * S # y_bottom
 
 
 def normalize_coords(obj, img_size, B, S):
@@ -49,10 +57,10 @@ def normalize_coords(obj, img_size, B, S):
     w_obj = np.sqrt(w_obj / w_img)
     h_obj = np.sqrt(h_obj / h_img)
 
-    index = int(np.floor(cy) * S + np.floor(cx))
-    obj = [x_obj, y_obj, w_obj, h_obj, index]
+    idx = int(np.floor(cy) * S + np.floor(cx))
+    obj = [x_obj, y_obj, w_obj, h_obj]
 
-    return obj
+    return obj, idx
 
 
 if __name__ == "__main__":
