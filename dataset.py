@@ -31,7 +31,7 @@ class YOLODataset(Dataset):
 
 
 # ref: https://github.com/makora9143/yolo-pytorch/blob/master/yolov1/data.py
-def create_label(bndbox_list, class_list, image_size, B=2, C=20, S=14):
+def create_label(bndbox_list, class_list, image_size, S=14, B=2, C=20):
     labels = {
         "person", "car", "bicycle", "bus",
         "motorbike", "train", "aeroplane",
