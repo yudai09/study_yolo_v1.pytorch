@@ -6,7 +6,7 @@ import numpy as np
 class YOLODataset(Dataset):
     def __init__(self):
         super(YOLODataset, self).__init__()
-        for img, anno in VOCDetection(root="/Users/yudaikato/dataset/voc/",  year="2012"):
+        for img, anno in VOCDetection(root="~/.dataset/voc/",  year="2012", download=True):
             bndbox_list = []
             objs = anno["annotation"]["object"]
             if isinstance(objs, list):
